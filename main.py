@@ -4,6 +4,7 @@ from typing import List
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from fastapi.middleware.cors import CORSMiddleware
 
 # Database Setup
 DATABASE_URL = "sqlite:///./test.db"
@@ -16,6 +17,22 @@ Base.metadata.create_all(bind=engine)
 
 # FastAPI app
 app = FastAPI()
+
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+    "http://localhost:3000",  # Common React dev server port
+    "http://localhost:5173",  # Add this line for Vite
+    "http://10.10.3.71",  # Add this line for your backend IP
+]
+# http://10.10.3.71:8000
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Pydantic Models
 class TodoItem(BaseModel):
